@@ -5,7 +5,7 @@ pub fn airplane(a: &RgbImage, b: &RgbImage) -> (u64, u64) {
     let mut start = Instant::now();
 
     let diff_dynamic_image: DynamicImage = difference(a, b).into();
-    diff_dynamic_image.save("Difference.png").unwrap();
+    //diff_dynamic_image.save("Difference.png").unwrap();
     println!("difference: {}", start.elapsed().as_micros());
     start = Instant::now();
 

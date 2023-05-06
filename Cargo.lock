@@ -1149,7 +1149,6 @@ dependencies = [
  "egui_extras",
  "glam",
  "image",
- "rscam",
 ]
 
 [[package]]
@@ -1942,15 +1941,6 @@ name = "regex-syntax"
 version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a5996294f19bd3aae0453a862ad728f60e6600695733dd5df01da90c54363a3c"
-
-[[package]]
-name = "rscam"
-version = "0.5.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "89056084211cd54924fedf2e2199b906409d1f795cfd8e7e3271061742457018"
-dependencies = [
- "libc",
-]
 
 [[package]]
 name = "rustix"

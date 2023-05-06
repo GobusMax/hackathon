@@ -1,3 +1,5 @@
+/* Start of Linux-specific part*/
+
 use std::{
     collections::LinkedList,
     sync::{Condvar, Mutex},
@@ -29,3 +31,5 @@ impl ImgQueue {
         data.is_empty()
     }
 }
+
+/* End of Linuxspecific part */

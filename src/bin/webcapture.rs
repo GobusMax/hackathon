@@ -1,8 +1,9 @@
-use std::fs::{File, self};
+/* Start of Linux-specific part*/
+
+use std::fs::{self, File};
 use std::io::Write;
 use std::thread::sleep;
 use std::time::Duration;
-
 
 fn main() {
     let mut camera = rscam::new("/dev/video0").unwrap();
@@ -21,7 +22,10 @@ fn main() {
     for i in 0..10000 {
         let frame = camera.capture().unwrap();
         fs::create_dir("webcap").unwrap();
-        let mut file = File::create(&format!("webcap/frame-{}.jpg", i)).unwrap();
+        let mut file =
+            File::create(&format!("webcap/frame-{}.jpg", i)).unwrap();
         file.write_all(&frame[..]).unwrap();
     }
 }
+
+/* End of Linux-specific Part */

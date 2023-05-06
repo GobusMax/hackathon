@@ -1,3 +1,5 @@
+/* Start of Linux-specific part*/
+
 use crate::img_queue::img_queue::ImgQueue;
 use std::{
     fs::{self, File},
@@ -20,3 +22,5 @@ pub(crate) fn img_handling_loop(queue: Arc<ImgQueue>) -> JoinHandle<()> {
         }
     })
 }
+
+/* End of Linuxspecific part */

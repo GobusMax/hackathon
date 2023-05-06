@@ -22,8 +22,8 @@ fn display(data: Vec<Vec2>, images: Vec<ImageBuffer<Rgb<u8>, Vec<u8>>>) {
 fn main() {
     let mut data = vec![];
     let mut images = vec![];
-    for i in 400..=600 {
-        let img = open(format!("data/frames/{:03}.jpg", i)).unwrap();
+    for i in 1..=52 {
+        let img = open(format!("data/short/{:03}.png", i)).unwrap();
         let img_buffer = img.to_rgb8();
         images.push(img_buffer);
     }
