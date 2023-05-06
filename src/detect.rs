@@ -1,10 +1,19 @@
-use image::{open, ImageBuffer, Rgb, RgbImage};
+use std::time::Instant;
 
+use image::{DynamicImage, ImageBuffer, Rgb, RgbImage};
+// use std::time;
 pub fn airplane(a: &RgbImage, b: &RgbImage) -> (u64, u64) {
-    let diff = difference(a, b);
-    diff.save("Difference.jpg").unwrap();
-    let diff = open("Difference.jpg").unwrap();
-    average(&diff.grayscale().to_rgb8())
+    let mut start = Instant::now();
+
+    let diff_dynamic_image: DynamicImage = difference(a, b).into();
+    diff_dynamic_image.save("Difference.png").unwrap();
+    println!("difference: {}", start.elapsed().as_micros());
+    start = Instant::now();
+
+    let res = average(&diff_dynamic_image.into_rgb8());
+
+    println!("average: {}\n", start.elapsed().as_micros());
+    res
 }
 fn h(pix: &Rgb<u8>) -> u64 {
     let (x, y, z) = (pix.0[0] as u64, pix.0[1] as u64, pix.0[2] as u64);
@@ -20,26 +29,30 @@ pub fn average(img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> (u64, u64) {
         .map(|(_x, _y, pix)| h(pix))
         .sum::<u64>()
         / (xdim as u64 * ydim as u64);
-    let (sum, x, y) = img
-        .enumerate_pixels()
-        .filter(|(x, y, _pix)| {
-            *x > 0
-                && *y > 0
-                && *x + 1 < xdim
-                && *y + 1 < ydim
-                && h(img.get_pixel(x - 1, y - 1))
-                    + h(img.get_pixel(x - 1, *y))
-                    + h(img.get_pixel(x - 1, y + 1))
-                    + h(img.get_pixel(*x, y - 1))
-                    + h(img.get_pixel(*x, *y))
-                    + h(img.get_pixel(*x, y + 1))
-                    + h(img.get_pixel(x + 1, y - 1))
-                    + h(img.get_pixel(x + 1, *y))
-                    + h(img.get_pixel(x + 1, y + 1))
-                    > 9 * avg
-        })
-        .map(|(x, y, pix)| (h(pix), x as u64 * h(pix), y as u64 * h(pix)))
-        .fold((0, 0, 0), |(a, b, c), (x, y, z)| (a + x, b + y, c + z));
+    let h_img = img
+        .rows()
+        .map(|r| r.map(h).collect::<Vec<_>>())
+        .collect::<Vec<_>>();
+    let (mut sum, mut x, mut y) = (0, 0, 0);
+    for i in 1..(h_img.len() - 1) {
+        for j in 1..(h_img[0].len() - 1) {
+            if h_img[i - 1][j - 1]
+                + h_img[i - 1][j]
+                + h_img[i - 1][j + 1]
+                + h_img[i][j - 1]
+                + h_img[i][j]
+                + h_img[i][j + 1]
+                + h_img[i + 1][j - 1]
+                + h_img[i + 1][j]
+                + h_img[i + 1][j + 1]
+                > 9 * avg
+            {
+                sum += h_img[i][j];
+                y += i as u64 * h_img[i][j];
+                x += j as u64 * h_img[i][j];
+            }
+        }
+    }
 
     (x / sum, y / sum)
 }

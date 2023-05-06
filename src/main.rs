@@ -5,9 +5,12 @@ use hackathon::visualization::EguiApp;
 use image::{open, DynamicImage};
 
 fn display(img: DynamicImage, data: Vec<Vec2>) {
-    let native_options = eframe::NativeOptions::default();
+    let native_options = eframe::NativeOptions {
+        fullscreen: true,
+        ..Default::default()
+    };
     eframe::run_native(
-        "My egui App",
+        "Airplane",
         native_options,
         Box::new(|cc| Box::new(EguiApp::new(cc, img, data))),
     )
