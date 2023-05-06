@@ -20,8 +20,7 @@ pub(crate) fn webcam_loop(queue: Arc<ImgQueue>) -> JoinHandle<()> {
 
         sleep(Duration::from_millis(1000));
         loop {
-            let frame: rscam::Frame =
-                camera.capture().expect("Error capturing from webcam.");
+            let frame: rscam::Frame = camera.capture().expect("Error capturing from webcam.");
             queue.write_frame(frame);
         }
     })
