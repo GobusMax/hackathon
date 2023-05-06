@@ -10,7 +10,7 @@ fn display(img: DynamicImage, data: Vec<Vec2>) {
     eframe::run_native(
         "My egui App",
         native_options,
-        Box::new(|cc| Box::new(vis::MyEguiApp::new(cc, img, data))),
+        Box::new(|cc| Box::new(vis::EguiApp::new(cc, img, data))),
     )
     .unwrap();
 }
