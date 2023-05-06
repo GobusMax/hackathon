@@ -39,7 +39,7 @@ fn main() {
      */
 
 
-    let image_queue = Arc::new(ImgQueue::default());
+    let image_queue = ImgQueue::default();
     let image_queue1 = image_queue.clone();
     let t1 = webcam_loop::webcam_loop(image_queue1);
     let image_queue2 = image_queue.clone();

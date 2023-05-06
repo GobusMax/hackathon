@@ -1,7 +1,7 @@
 use std::{thread::{self, JoinHandle, sleep}, time::Duration, sync::Arc};
 use crate::img_queue::img_queue::ImgQueue;
 
-pub(crate) fn webcam_loop(queue: Arc<ImgQueue>) -> JoinHandle<()> {
+pub(crate) fn webcam_loop(queue: &ImgQueue) -> JoinHandle<()> {
     thread::spawn(move || {
         let mut camera = rscam::new("/dev/video0").unwrap();
 
@@ -16,8 +16,8 @@ pub(crate) fn webcam_loop(queue: Arc<ImgQueue>) -> JoinHandle<()> {
 
         sleep(Duration::from_millis(1000));
         loop {
-            let frame = camera.capture().expect("Error capturing from webcam.");
-            queue.enqueue_frame(frame);
+            let frame: rscam::Frame = camera.capture().expect("Error capturing from webcam.");
+            queue.write_frame(frame);
         }
     })
 }

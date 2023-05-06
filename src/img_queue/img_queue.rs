@@ -1,31 +1,49 @@
 use std::{
-    collections::LinkedList,
-    sync::{Condvar, Mutex},
-};
+    sync::{Condvar, Mutex}, default};
 
-#[derive(Default)]
-pub struct ImgQueue {
-    queue: Mutex<LinkedList<Vec<u8>>>,
-    cv: Condvar,
+use derive_more::*;
+
+#[derive(Default, Deref, DerefMut, Clone)]
+pub struct  ImgQueue {
+    #[deref]
+    #[deref_mut]
+    write_head_is_0: bool,
+    image0: Mutex<Vec<u8>>,
+    image1: Mutex<Vec<u8>>,
+    cv0: Condvar,
+    cv1: Condvar,
 }
 
 impl ImgQueue {
-    pub fn enqueue_frame(&self, frame: rscam::Frame) {
-        self.queue.lock().unwrap().push_back(frame.to_vec());
-        self.cv.notify_one();
+    pub fn write_frame(&mut self, frame: rscam::Frame) {
+        if self.write_head_is_0 {
+            *self.image0.lock().unwrap() = frame.to_vec();
+            self.cv0.notify_one();
+        } else {
+            *self.image1.lock().unwrap() = frame.to_vec();
+            self.cv1.notify_one();
+        }
+        self.write_head_is_0 = !self.write_head_is_0;
     }
 
-    pub fn dequeue_frame(&self) -> Option<Vec<u8>> {
-        let mut data = self.queue.lock().unwrap();
+    pub fn read_frame(&self) -> Vec<u8> {
+        let (read_head, cv) = if !self.write_head_is_0 {
+            (&self.image0, &self.cv0)
+        } else {
+            (&self.image1, &self.cv1)
+        };
+
+        let mut data = read_head.lock().unwrap();
 
         while data.is_empty() {
-            data = self.cv.wait(data).unwrap();
+            data = cv.wait(data).unwrap();
         }
-        data.pop_front()
+        data.to_owned()
     }
 
     fn is_empty(&self) -> bool {
-        let data = self.queue.lock().unwrap();
-        data.is_empty()
+        [&self.image0, &self.image1]
+            .into_iter()
+            .all(|image| image.lock().unwrap().is_empty())
     }
 }
