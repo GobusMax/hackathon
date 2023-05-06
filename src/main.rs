@@ -1,16 +1,15 @@
+mod bin;
+mod image_manipulation;
+use bin::{detect, visualization::EguiApp};
 use egui::{vec2, Vec2};
 use image::{open, DynamicImage};
-#[path = "bin/detect.rs"]
-mod detect;
-mod image_manipulation;
-#[path = "bin/visualization.rs"]
-mod vis;
+
 fn display(img: DynamicImage, data: Vec<Vec2>) {
     let native_options = eframe::NativeOptions::default();
     eframe::run_native(
         "My egui App",
         native_options,
-        Box::new(|cc| Box::new(vis::EguiApp::new(cc, img, data))),
+        Box::new(|cc| Box::new(EguiApp::new(cc, img, data))),
     )
     .unwrap();
 }
