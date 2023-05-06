@@ -2,7 +2,6 @@ use std::{thread::{self, JoinHandle}, sync::Arc, fs::{self, File}, io::Write};
 use crate::img_queue::img_queue::ImgQueue;
 
 
-
 pub(crate) fn img_handling_loop (queue: Arc<ImgQueue>) -> JoinHandle<()> {
     thread::spawn(move || {
         let mut i: i32 = 0;
