@@ -1,20 +1,18 @@
-use image::{open, DynamicImage, GenericImageView, ImageBuffer, Rgb, RgbImage};
+use image::{open, DynamicImage, ImageBuffer, Rgb, RgbImage};
 
-pub fn airplane(a: &DynamicImage, b: &DynamicImage) -> (u64, u64) {
-    let diff = difference(&a.clone().into_rgb8(), &b.clone().into_rgb8());
+pub fn airplane(a: &RgbImage, b: &RgbImage) -> (u64, u64) {
+    let diff = difference(a, b);
     diff.save("Difference.jpg").unwrap();
     let diff = open("Difference.jpg").unwrap();
-    diff.grayscale().save("GrayscaleDifference.jpg").unwrap();
-    let diff = open("GrayscaleDifference.jpg").unwrap();
-    return average(&diff);
+    return average(&diff.grayscale().to_rgb8());
 }
 fn h(pix: &Rgb<u8>) -> u64 {
     let (x, y, z) = (pix.0[0] as u64, pix.0[1] as u64, pix.0[2] as u64);
     return x * x + y * y + z * z;
 }
 
-pub fn average(img: &DynamicImage) -> (u64, u64) {
-    let img = img.to_rgb8();
+pub fn average(img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> (u64, u64) {
+    //let img = img.to_rgb8();
     let xdim = img.width();
     let ydim = img.height();
     let avg: u64 = img
@@ -22,7 +20,7 @@ pub fn average(img: &DynamicImage) -> (u64, u64) {
         .map(|(_x, _y, pix)| h(pix))
         .sum::<u64>()
         / (xdim as u64 * ydim as u64);
-    let sum: u64 = img
+    let (sum, x, y) = img
         .enumerate_pixels()
         .filter(|(x, y, _pix)| {
             *x > 0
@@ -40,48 +38,9 @@ pub fn average(img: &DynamicImage) -> (u64, u64) {
                     + h(img.get_pixel(x + 1, y + 1))
                     > 9 * avg
         })
-        .map(|(_x, _y, pix)| h(pix))
-        .sum();
-    let x: u64 = img
-        .enumerate_pixels()
-        .filter(|(x, y, _pix)| {
-            *x > 0
-                && *y > 0
-                && *x + 1 < xdim
-                && *y + 1 < ydim
-                && h(img.get_pixel(x - 1, y - 1))
-                    + h(img.get_pixel(x - 1, *y))
-                    + h(img.get_pixel(x - 1, y + 1))
-                    + h(img.get_pixel(*x, y - 1))
-                    + h(img.get_pixel(*x, *y))
-                    + h(img.get_pixel(*x, y + 1))
-                    + h(img.get_pixel(x + 1, y - 1))
-                    + h(img.get_pixel(x + 1, *y))
-                    + h(img.get_pixel(x + 1, y + 1))
-                    > 9 * avg
-        })
-        .map(|(x, _y, pix)| x as u64 * h(pix))
-        .sum();
-    let y: u64 = img
-        .enumerate_pixels()
-        .filter(|(x, y, _pix)| {
-            *x > 0
-                && *y > 0
-                && *x + 1 < xdim
-                && *y + 1 < ydim
-                && h(img.get_pixel(x - 1, y - 1))
-                    + h(img.get_pixel(x - 1, *y))
-                    + h(img.get_pixel(x - 1, y + 1))
-                    + h(img.get_pixel(*x, y - 1))
-                    + h(img.get_pixel(*x, *y))
-                    + h(img.get_pixel(*x, y + 1))
-                    + h(img.get_pixel(x + 1, y - 1))
-                    + h(img.get_pixel(x + 1, *y))
-                    + h(img.get_pixel(x + 1, y + 1))
-                    > 9 * avg
-        })
-        .map(|(_x, y, pix)| y as u64 * h(pix))
-        .sum();
+        .map(|(x, y, pix)| (h(pix), x as u64 * h(pix), y as u64 * h(pix)))
+        .fold((0, 0, 0), |(a, b, c), (x, y, z)| (a + x, b + y, c + z));
+
     return (x / sum, y / sum);
 }
 
