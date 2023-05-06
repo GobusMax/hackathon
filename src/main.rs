@@ -24,7 +24,7 @@ fn main() {
         images.push(img_buffer);
     }
 
-    for i in 2..52 {
+    for i in 1..images.len() {
         let x = detect::airplane(&images[0], &images[i]);
         data.push(vec2(x.0 as f32, images[0].height() as f32 - x.1 as f32));
     }

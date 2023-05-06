@@ -69,7 +69,7 @@ impl eframe::App for EguiApp {
             let line = Line::new(plot_points).width(2.);
             ui.add(
                 Slider::new(&mut self.cur, 0..=(self.textures.len() - 2))
-                    .text("Test"),
+                    .text("Number of Frames"),
             );
             Plot::new("Plot")
                 .view_aspect(1.0)
