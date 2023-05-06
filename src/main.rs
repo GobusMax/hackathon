@@ -1,13 +1,8 @@
-mod img_buffer;
-mod visualization;
-mod webcam_loop;
-mod detect;
-
 use std::sync::Arc;
 use egui::{vec2, Vec2};
-use crate::visualization::EguiApp;
+use hackathon::{visualization::EguiApp, img_buffer::ImgQueue};
 use image::{open, ImageBuffer, Rgb};
-use img_buffer::{img_buffer::ImgQueue, img_loop};
+use hackathon::loops::{webcam_loop, img_loop};
 
 fn display(data: Vec<Vec2>, images: Vec<ImageBuffer<Rgb<u8>, Vec<u8>>>) {
     let native_options = eframe::NativeOptions {

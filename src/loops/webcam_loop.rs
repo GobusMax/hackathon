@@ -1,11 +1,11 @@
-use crate::img_buffer::img_buffer::ImgQueue;
+use crate::img_buffer::ImgQueue;
 use std::{
     sync::Arc,
     thread::{self, sleep, JoinHandle},
     time::Duration,
 };
 
-pub(crate) fn webcam_loop(queue: Arc<ImgQueue>) -> JoinHandle<()> {
+pub fn webcam_loop(queue: Arc<ImgQueue>) -> JoinHandle<()> {
     thread::spawn(move || {
         let mut camera = rscam::new("/dev/video0").unwrap();
 
