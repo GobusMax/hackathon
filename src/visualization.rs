@@ -1,9 +1,22 @@
 use egui::{
     plot::{log_grid_spacer, Line, Plot, PlotImage, PlotPoints, Points},
-    Color32, ColorImage, Slider, TextureHandle, TextureOptions, Vec2,
+    Color32, ColorImage, Slider, TextureHandle, TextureOptions, Vec2, Visuals,
 };
 
 use image::DynamicImage;
+
+fn display() {
+    let native_options = eframe::NativeOptions {
+        fullscreen: true,
+        ..Default::default()
+    };
+    eframe::run_native(
+        "Airplane",
+        native_options,
+        Box::new(|cc| Box::new(EguiApp::new(cc))),
+    )
+    .unwrap();
+}
 
 pub struct EguiApp {
     cur: usize,
@@ -17,7 +30,7 @@ impl EguiApp {
         // Restore app state using cc.storage (requires the "persistence" feature).
         // Use the cc.gl (a glow::Context) to create graphics shaders and buffers that you can use
         // for e.g. egui::PaintCallback.
-
+        _cc.egui_ctx.set_visuals(Visuals::light());
         Self {
             data: vec![],
             cur: 0,
