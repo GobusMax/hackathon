@@ -17,13 +17,13 @@ fn main() {
     .unwrap();
 }
 
-struct MyEguiApp {
+pub struct MyEguiApp {
     tex: TextureHandle,
     data: Vec<Vec2>,
 }
 
 impl MyEguiApp {
-    fn new(
+    pub fn new(
         cc: &eframe::CreationContext<'_>,
         image: DynamicImage,
         data: Vec<Vec2>,
