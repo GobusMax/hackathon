@@ -17,7 +17,7 @@ pub fn airplane(a: &RgbImage, b: &RgbImage) -> (u64, u64) {
 }
 fn h(pix: &Rgb<u8>) -> u64 {
     let (x, y, z) = (pix.0[0] as u64, pix.0[1] as u64, pix.0[2] as u64);
-    x * x + y * y + z * z
+    0 * x * x + 0 * y * y + z * z * 1
 }
 
 pub fn average(img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> (u64, u64) {
@@ -31,6 +31,7 @@ pub fn average(img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> (u64, u64) {
     let avg: u64 =
         h_img.iter().flatten().sum::<u64>() / (xdim as u64 * ydim as u64);
     let (mut sum, mut x, mut y) = (0, 0, 0);
+    let max = (h_img.iter().flatten().max().unwrap());
     for i in 1..(h_img.len() - 1) {
         for j in 1..(h_img[0].len() - 1) {
             if h_img[i - 1][j - 1]
@@ -42,7 +43,7 @@ pub fn average(img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> (u64, u64) {
                 + h_img[i + 1][j - 1]
                 + h_img[i + 1][j]
                 + h_img[i + 1][j + 1]
-                > 9 * avg
+                >= 9 * avg + max / 2
             {
                 sum += h_img[i][j];
                 y += i as u64 * h_img[i][j];
@@ -50,6 +51,7 @@ pub fn average(img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> (u64, u64) {
             }
         }
     }
+    dbg!(sum);
     (x / sum, y / sum)
 }
 
