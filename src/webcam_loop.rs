@@ -1,6 +1,5 @@
 use crate::img_buffer::img_buffer::ImgQueue;
 use std::{
-    ops::Deref,
     sync::Arc,
     thread::{self, sleep, JoinHandle},
     time::Duration,

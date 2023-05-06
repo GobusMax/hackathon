@@ -12,7 +12,7 @@ pub struct EguiApp {
 }
 
 impl EguiApp {
-    pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
+    pub fn new(_cc: &eframe::CreationContext<'_>) -> Self {
         // Customize egui here with cc.egui_ctx.set_fonts and cc.egui_ctx.set_visuals.
         // Restore app state using cc.storage (requires the "persistence" feature).
         // Use the cc.gl (a glow::Context) to create graphics shaders and buffers that you can use
@@ -29,7 +29,7 @@ const MAX_NUM_DATA: usize = 100;
 
 impl eframe::App for EguiApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        let new_image = getImage();
+        let new_image = get_image();
         self.textures.push(ctx.load_texture(
             "tex",
             ColorImage::from_rgb(
@@ -38,7 +38,7 @@ impl eframe::App for EguiApp {
             ),
             TextureOptions::default(),
         ));
-        self.data.push(getPos());
+        self.data.push(get_pos());
         if self.data.len() >= MAX_NUM_DATA {
             self.data.remove(0);
         }
@@ -82,9 +82,9 @@ impl eframe::App for EguiApp {
     }
 }
 
-fn getImage() -> DynamicImage {
+fn get_image() -> DynamicImage {
     todo!()
 }
-fn getPos() -> Vec2 {
+fn get_pos() -> Vec2 {
     todo!()
 }

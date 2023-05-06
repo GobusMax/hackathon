@@ -7,7 +7,7 @@ use crate::visualization::EguiApp;
 use egui::{vec2, Vec2};
 use image::{open, ImageBuffer, Rgb};
 use img_buffer::{img_buffer::ImgQueue, img_loop};
-use img_queue::{img_loop, img_queue::ImgQueue};
+use img_buffer::{img_loop, img_buffer::ImgQueue};
 use std::sync::Arc;
 
 fn display() {
