@@ -1,13 +1,13 @@
+mod detect;
 mod img_queue;
 mod visualization;
 mod webcam_loop;
-mod detect;
 
-use std::sync::Arc;
-use egui::{vec2, Vec2};
 use crate::visualization::EguiApp;
+use egui::{vec2, Vec2};
 use image::{open, ImageBuffer, Rgb};
-use img_queue::{img_queue::ImgQueue, img_loop};
+use img_queue::{img_loop, img_queue::ImgQueue};
+use std::sync::Arc;
 
 fn display(data: Vec<Vec2>, images: Vec<ImageBuffer<Rgb<u8>, Vec<u8>>>) {
     let native_options = eframe::NativeOptions {
@@ -38,12 +38,11 @@ fn main() {
     display(data, images);
      */
 
-
     let image_queue = ImgQueue::default();
-    let image_queue1 = image_queue.clone();
-    let t1 = webcam_loop::webcam_loop(image_queue1);
+    let mut image_queue1 = image_queue.clone();
+    let t1 = webcam_loop::webcam_loop(&mut image_queue1);
     let image_queue2 = image_queue.clone();
-    let t2 = img_loop::img_handling_loop(image_queue2);
+    let t2 = img_loop::img_handling_loop(&image_queue2);
     t1.join().unwrap();
     t2.join().unwrap();
 }
