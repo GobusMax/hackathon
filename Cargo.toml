@@ -11,3 +11,4 @@ image = { version = "0.24", features = ["jpeg", "png"] }
 egui = "0.21.0"
 eframe = "0.21.0"
 glam = "0.24.0"
+nokhwa = {version = "0.10.3", features = ["input-native", "output-threaded"]}
