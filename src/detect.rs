@@ -24,15 +24,12 @@ pub fn average(img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> (u64, u64) {
     //let img = img.to_rgb8();
     let xdim = img.width();
     let ydim = img.height();
-    let avg: u64 = img
-        .enumerate_pixels()
-        .map(|(_x, _y, pix)| h(pix))
-        .sum::<u64>()
-        / (xdim as u64 * ydim as u64);
     let h_img = img
         .rows()
         .map(|r| r.map(h).collect::<Vec<_>>())
         .collect::<Vec<_>>();
+    let avg: u64 =
+        h_img.iter().flatten().sum::<u64>() / (xdim as u64 * ydim as u64);
     let (mut sum, mut x, mut y) = (0, 0, 0);
     for i in 1..(h_img.len() - 1) {
         for j in 1..(h_img[0].len() - 1) {
@@ -53,7 +50,6 @@ pub fn average(img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> (u64, u64) {
             }
         }
     }
-
     (x / sum, y / sum)
 }
 

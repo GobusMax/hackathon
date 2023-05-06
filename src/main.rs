@@ -1,5 +1,4 @@
 mod detect;
-mod image_manipulation;
 use egui::{vec2, Vec2};
 use hackathon::visualization::EguiApp;
 use image::{open, DynamicImage};
