@@ -1,7 +1,6 @@
 use std::time::Instant;
 
 use image::{DynamicImage, ImageBuffer, Rgb, RgbImage};
-// use std::time;
 pub fn airplane(a: &RgbImage, b: &RgbImage) -> (u64, u64) {
     let mut start = Instant::now();
 

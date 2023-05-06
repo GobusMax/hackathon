@@ -1,11 +1,40 @@
+use egui::vec2;
 use egui::{
     plot::{log_grid_spacer, Line, Plot, PlotImage, PlotPoints, Points},
     Color32, ColorImage, Slider, TextureHandle, TextureOptions, Vec2,
 };
+use hackathon::detect;
 
-use image::{ImageBuffer, Rgb};
+use image::{open, ImageBuffer, Rgb};
 
-pub struct EguiApp {
+fn display(data: Vec<Vec2>, images: Vec<ImageBuffer<Rgb<u8>, Vec<u8>>>) {
+    let native_options = eframe::NativeOptions {
+        fullscreen: true,
+        ..Default::default()
+    };
+    eframe::run_native(
+        "Airplane",
+        native_options,
+        Box::new(|cc| Box::new(EguiApp::new(cc, data, images))),
+    )
+    .unwrap();
+}
+fn main() {
+    let mut data = vec![];
+    let mut images = vec![];
+    for i in 400..=600 {
+        let img = open(format!("data/frames/{:03}.jpg", i)).unwrap();
+        let img_buffer = img.to_rgb8();
+        images.push(img_buffer);
+    }
+
+    for i in 1..images.len() {
+        let x = detect::airplane(&images[0], &images[i]);
+        data.push(vec2(x.0 as f32, images[0].height() as f32 - x.1 as f32));
+    }
+    display(data, images);
+}
+struct EguiApp {
     cur: usize,
     data: Vec<Vec2>,
     textures: Vec<TextureHandle>,
