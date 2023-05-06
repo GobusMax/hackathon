@@ -1,7 +1,7 @@
-mod bin;
+mod detect;
 mod image_manipulation;
-use bin::{detect, visualization::EguiApp};
 use egui::{vec2, Vec2};
+use hackathon::visualization::EguiApp;
 use image::{open, DynamicImage};
 
 fn display(img: DynamicImage, data: Vec<Vec2>) {

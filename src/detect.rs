@@ -1,14 +1,14 @@
-use image::{open, DynamicImage, ImageBuffer, Rgb, RgbImage};
+use image::{open, ImageBuffer, Rgb, RgbImage};
 
 pub fn airplane(a: &RgbImage, b: &RgbImage) -> (u64, u64) {
     let diff = difference(a, b);
     diff.save("Difference.jpg").unwrap();
     let diff = open("Difference.jpg").unwrap();
-    return average(&diff.grayscale().to_rgb8());
+    average(&diff.grayscale().to_rgb8())
 }
 fn h(pix: &Rgb<u8>) -> u64 {
     let (x, y, z) = (pix.0[0] as u64, pix.0[1] as u64, pix.0[2] as u64);
-    return x * x + y * y + z * z;
+    x * x + y * y + z * z
 }
 
 pub fn average(img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> (u64, u64) {
@@ -41,7 +41,7 @@ pub fn average(img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> (u64, u64) {
         .map(|(x, y, pix)| (h(pix), x as u64 * h(pix), y as u64 * h(pix)))
         .fold((0, 0, 0), |(a, b, c), (x, y, z)| (a + x, b + y, c + z));
 
-    return (x / sum, y / sum);
+    (x / sum, y / sum)
 }
 
 pub fn difference(
@@ -59,5 +59,5 @@ pub fn difference(
                 a[2].abs_diff(b[2]),
             ])
         });
-    return diff;
+    diff
 }

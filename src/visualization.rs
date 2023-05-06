@@ -1,25 +1,9 @@
 use egui::{
     plot::{log_grid_spacer, Line, Plot, PlotImage, PlotPoints, Points},
-    vec2, Color32, ColorImage, TextureHandle, TextureOptions, Vec2,
+    Color32, ColorImage, TextureHandle, TextureOptions, Vec2,
 };
 
-use image::{io::Reader, DynamicImage};
-
-fn main() {
-    let img = Reader::open("data/plane.jpg").unwrap().decode().unwrap();
-    let data = vec![vec2(100., 200.), vec2(231., 364.), vec2(300., 100.)];
-    let native_options = eframe::NativeOptions {
-        fullscreen: true,
-        ..Default::default()
-    };
-
-    eframe::run_native(
-        "Hackathon",
-        native_options,
-        Box::new(|cc| Box::new(EguiApp::new(cc, img, data))),
-    )
-    .unwrap();
-}
+use image::DynamicImage;
 
 pub struct EguiApp {
     tex: TextureHandle,
@@ -49,7 +33,7 @@ impl EguiApp {
 }
 
 impl eframe::App for EguiApp {
-    fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
+    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         egui::CentralPanel::default().show(ctx, |ui| {
             let plot_image = PlotImage::new(
                 self.tex.id(),

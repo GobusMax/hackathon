@@ -1,8 +1,9 @@
+pub mod visualization;
 use std::f32::consts::PI;
 
 use glam::{vec2, vec3, Vec2, Vec2Swizzles, Vec3};
 
-fn pixel_space_to_3d_space(
+fn _pixel_space_to_3d_space(
     pixel_pos1: Vec2,
     pixel_pos2: Vec2,
     camera2_pos_rel: Vec3,
