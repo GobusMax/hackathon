@@ -3,7 +3,7 @@ use egui::{
     Color32, ColorImage, Slider, TextureHandle, TextureOptions, Vec2,
 };
 
-use image::{ImageBuffer, Rgb};
+use image::DynamicImage;
 
 pub struct EguiApp {
     cur: usize,
@@ -12,41 +12,38 @@ pub struct EguiApp {
 }
 
 impl EguiApp {
-    pub fn new(
-        cc: &eframe::CreationContext<'_>,
-        data: Vec<Vec2>,
-        images: Vec<ImageBuffer<Rgb<u8>, Vec<u8>>>,
-    ) -> Self {
+    pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
         // Customize egui here with cc.egui_ctx.set_fonts and cc.egui_ctx.set_visuals.
         // Restore app state using cc.storage (requires the "persistence" feature).
         // Use the cc.gl (a glow::Context) to create graphics shaders and buffers that you can use
         // for e.g. egui::PaintCallback.
-        let textures = images
-            .iter()
-            .enumerate()
-            .map(|(i, ib)| {
-                cc.egui_ctx.load_texture(
-                    format!("data/short/{:03}", i),
-                    ColorImage::from_rgb(
-                        [ib.width() as usize, ib.height() as usize],
-                        ib.as_flat_samples().as_slice(),
-                    ),
-                    TextureOptions::default(),
-                )
-            })
-            .collect();
 
         Self {
-            data,
+            data: vec![],
             cur: 0,
-            textures,
+            textures: vec![],
         }
     }
 }
+const MAX_NUM_DATA: usize = 100;
 
 impl eframe::App for EguiApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        let new_image = getImage();
+        self.textures.push(ctx.load_texture(
+            "tex",
+            ColorImage::from_rgb(
+                [new_image.width() as usize, new_image.width() as usize],
+                new_image.as_rgb8().unwrap().as_flat_samples().as_slice(),
+            ),
+            TextureOptions::default(),
+        ));
+        self.data.push(getPos());
+        if self.data.len() >= MAX_NUM_DATA {
+            self.data.remove(0);
+        }
         egui::CentralPanel::default().show(ctx, |ui| {
+            //UPDATE
             let tex = &self.textures[self.cur];
             let plot_image = PlotImage::new(
                 tex.id(),
@@ -83,10 +80,11 @@ impl eframe::App for EguiApp {
                 });
         });
     }
-    fn post_rendering(
-        &mut self,
-        _window_size_px: [u32; 2],
-        _frame: &eframe::Frame,
-    ) {
-    }
+}
+
+fn getImage() -> DynamicImage {
+    todo!()
+}
+fn getPos() -> Vec2 {
+    todo!()
 }
