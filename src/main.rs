@@ -1,9 +1,9 @@
 mod detect;
 use egui::{vec2, Vec2};
 use hackathon::visualization::EguiApp;
-use image::{open, DynamicImage};
+use image::{open, ImageBuffer, Rgb};
 
-fn display(img: DynamicImage, data: Vec<Vec2>) {
+fn display(data: Vec<Vec2>, images: Vec<ImageBuffer<Rgb<u8>, Vec<u8>>>) {
     let native_options = eframe::NativeOptions {
         fullscreen: true,
         ..Default::default()
@@ -11,20 +11,22 @@ fn display(img: DynamicImage, data: Vec<Vec2>) {
     eframe::run_native(
         "Airplane",
         native_options,
-        Box::new(|cc| Box::new(EguiApp::new(cc, img, data))),
+        Box::new(|cc| Box::new(EguiApp::new(cc, data, images))),
     )
     .unwrap();
 }
 fn main() {
     let mut data = vec![];
-
-    let a = open("data/short/001.png").unwrap().to_rgb8();
-    for i in 2..52 {
-        let b = open(format!("data/short/{:03}.png", i)).unwrap().to_rgb8();
-        let x = detect::airplane(&a, &b);
-        data.push(vec2(x.0 as f32, a.height() as f32 - x.1 as f32));
+    let mut images = vec![];
+    for i in 1..=52 {
+        let img = open(format!("data/short/{:03}.png", i)).unwrap();
+        let img_buffer = img.to_rgb8();
+        images.push(img_buffer);
     }
-    let a = open("data/short/001.png").unwrap();
 
-    display(a, data);
+    for i in 2..52 {
+        let x = detect::airplane(&images[0], &images[i]);
+        data.push(vec2(x.0 as f32, images[0].height() as f32 - x.1 as f32));
+    }
+    display(data, images);
 }

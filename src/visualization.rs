@@ -3,51 +3,43 @@ use egui::{
     Color32, ColorImage, Slider, TextureHandle, TextureOptions, Vec2,
 };
 
-use image::{open, DynamicImage, ImageBuffer, Rgb};
+use image::{ImageBuffer, Rgb};
 
 pub struct EguiApp {
-    tex: TextureHandle,
     data: Vec<Vec2>,
     cur: usize,
-    images: Vec<TextureHandle>,
+    textures: Vec<TextureHandle>,
 }
 
 impl EguiApp {
     pub fn new(
         cc: &eframe::CreationContext<'_>,
-        image: DynamicImage,
         data: Vec<Vec2>,
+        images: Vec<ImageBuffer<Rgb<u8>, Vec<u8>>>,
     ) -> Self {
         // Customize egui here with cc.egui_ctx.set_fonts and cc.egui_ctx.set_visuals.
         // Restore app state using cc.storage (requires the "persistence" feature).
         // Use the cc.gl (a glow::Context) to create graphics shaders and buffers that you can use
         // for e.g. egui::PaintCallback.
-        let size = [image.width() as _, image.height() as _];
-        let image_buffer = image.to_rgba8();
-        let pixels = image_buffer.as_flat_samples();
-        let tex = cc.egui_ctx.load_texture(
-            "Background Texture",
-            ColorImage::from_rgba_unmultiplied(size, pixels.as_slice()),
-            TextureOptions::default(),
-        );
-        let mut images = vec![];
-        for i in 1..=52 {
-            let img = open(format!("data/short/{:03}.png", i)).unwrap();
-            let s = [img.width() as _, img.height() as _];
-            let img_buffer = img.to_rgba8();
-            let pixs = img_buffer.as_flat_samples();
+        let textures = images
+            .iter()
+            .enumerate()
+            .map(|(i, ib)| {
+                cc.egui_ctx.load_texture(
+                    format!("data/short/{:03}", i),
+                    ColorImage::from_rgba_unmultiplied(
+                        [ib.width() as usize, ib.height() as usize],
+                        ib.as_flat_samples().as_slice(),
+                    ),
+                    TextureOptions::default(),
+                )
+            })
+            .collect();
 
-            images.push(cc.egui_ctx.load_texture(
-                format!("data/short/{:03}", i),
-                ColorImage::from_rgba_unmultiplied(s, pixs.as_slice()),
-                TextureOptions::default(),
-            ));
-        }
         Self {
-            tex,
             data,
             cur: 0,
-            images,
+            textures,
         }
     }
 }
@@ -55,7 +47,7 @@ impl EguiApp {
 impl eframe::App for EguiApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         egui::CentralPanel::default().show(ctx, |ui| {
-            let tex = &self.images[self.cur + 1];
+            let tex = &self.textures[self.cur];
             let plot_image = PlotImage::new(
                 tex.id(),
                 egui::plot::PlotPoint {
@@ -76,7 +68,7 @@ impl eframe::App for EguiApp {
                 .collect();
             let line = Line::new(plot_points).width(2.);
             ui.add(
-                Slider::new(&mut self.cur, 0..=(self.images.len() - 2))
+                Slider::new(&mut self.cur, 0..=(self.textures.len() - 2))
                     .text("Test"),
             );
             Plot::new("Plot")
