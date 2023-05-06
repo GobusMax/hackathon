@@ -19,7 +19,7 @@ fn h(pix: &Rgb<u8>) -> u64 {
     x * x + y * y + z * z
 }
 
-pub fn average(img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> (u64, u64) {
+pub fn average(img: &RgbImage) -> (u64, u64) {
     let xdim = img.width();
     let ydim = img.height();
     let h_img = img
