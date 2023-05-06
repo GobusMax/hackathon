@@ -8,7 +8,7 @@ use image::{io::Reader, DynamicImage};
 fn main() {
     let img = Reader::open("data/plane.jpg").unwrap().decode().unwrap();
     let data = vec![vec2(100., 200.), vec2(231., 364.), vec2(300., 100.)];
-    let mut native_options = eframe::NativeOptions {
+    let native_options = eframe::NativeOptions {
         fullscreen: true,
         ..Default::default()
     };
@@ -40,7 +40,7 @@ impl EguiApp {
         let image_buffer = image.to_rgba8();
         let pixels = image_buffer.as_flat_samples();
         let res = cc.egui_ctx.load_texture(
-            "Blub",
+            "Background Texture",
             ColorImage::from_rgba_unmultiplied(size, pixels.as_slice()),
             TextureOptions::default(),
         );
@@ -66,7 +66,7 @@ impl eframe::App for EguiApp {
             let plot_points: PlotPoints =
                 self.data.iter().map(|v| [v.x as f64, v.y as f64]).collect();
             let line = Line::new(plot_points).width(2.);
-            Plot::new("my_plot")
+            Plot::new("Plot")
                 .view_aspect(1.0)
                 .data_aspect(1.)
                 .x_grid_spacer(log_grid_spacer(100))
