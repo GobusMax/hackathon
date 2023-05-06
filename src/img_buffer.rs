@@ -1,7 +1,10 @@
-use std::sync::{Arc, Condvar, Mutex, atomic::{AtomicBool, Ordering}};
+use std::sync::{
+    atomic::{AtomicBool, Ordering},
+    Arc, Condvar, Mutex,
+};
 
 #[derive(Default)]
-pub struct ImgQueue {
+pub struct ImgSwapBuffer {
     write_head_is_0: AtomicBool,
     image0: Mutex<Vec<u8>>,
     image1: Mutex<Vec<u8>>,
@@ -9,8 +12,8 @@ pub struct ImgQueue {
     cv1: Condvar,
 }
 
-impl ImgQueue {
-    pub fn write_frame(self: &Arc<ImgQueue>, frame: rscam::Frame) {
+impl ImgSwapBuffer {
+    pub fn write_frame(self: &Arc<ImgSwapBuffer>, frame: rscam::Frame) {
         let (write_head, cv) = if self.write_head_is_0.load(Ordering::Relaxed) {
             (&self.image0, &self.cv0)
         } else {
@@ -20,7 +23,10 @@ impl ImgQueue {
         let mut data = write_head.lock().unwrap();
 
         *data = frame.to_vec();
-        self.write_head_is_0.store(!self.write_head_is_0.load(Ordering::Relaxed), Ordering::Relaxed);
+        self.write_head_is_0.store(
+            !self.write_head_is_0.load(Ordering::Relaxed),
+            Ordering::Relaxed,
+        );
         cv.notify_one();
     }
 

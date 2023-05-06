@@ -1,8 +1,8 @@
-use egui::vec2;
 use egui::{
     plot::{log_grid_spacer, Line, Plot, PlotImage, PlotPoints, Points},
     Color32, ColorImage, Slider, TextureHandle, TextureOptions, Vec2,
 };
+use egui::{vec2, Visuals};
 use hackathon::detect;
 
 use image::{open, ImageBuffer, Rgb};
@@ -50,6 +50,7 @@ impl EguiApp {
         // Restore app state using cc.storage (requires the "persistence" feature).
         // Use the cc.gl (a glow::Context) to create graphics shaders and buffers that you can use
         // for e.g. egui::PaintCallback.
+        cc.egui_ctx.set_visuals(Visuals::light());
         let textures = images
             .iter()
             .enumerate()
