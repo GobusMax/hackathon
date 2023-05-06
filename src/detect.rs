@@ -21,7 +21,6 @@ fn h(pix: &Rgb<u8>) -> u64 {
 }
 
 pub fn average(img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> (u64, u64) {
-    //let img = img.to_rgb8();
     let xdim = img.width();
     let ydim = img.height();
     let h_img = img
@@ -31,7 +30,8 @@ pub fn average(img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> (u64, u64) {
     let avg: u64 =
         h_img.iter().flatten().sum::<u64>() / (xdim as u64 * ydim as u64);
     let (mut sum, mut x, mut y) = (0, 0, 0);
-    let max = (h_img.iter().flatten().max().unwrap());
+    let max = h_img.iter().flatten().max().unwrap();
+
     for i in 1..(h_img.len() - 1) {
         for j in 1..(h_img[0].len() - 1) {
             if h_img[i - 1][j - 1]
