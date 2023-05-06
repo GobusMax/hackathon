@@ -1,12 +1,13 @@
-use crate::img_queue::img_queue::ImgQueue;
+use crate::img_buffer::img_buffer::ImgQueue;
 use std::{
+    ops::Deref,
     sync::Arc,
     thread::{self, sleep, JoinHandle},
     time::Duration,
 };
 
-pub(crate) fn webcam_loop(queue: &mut ImgQueue) -> JoinHandle<()> {
-    thread::spawn(|| {
+pub(crate) fn webcam_loop(queue: Arc<ImgQueue>) -> JoinHandle<()> {
+    thread::spawn(move || {
         let mut camera = rscam::new("/dev/video0").unwrap();
 
         camera
@@ -16,7 +17,7 @@ pub(crate) fn webcam_loop(queue: &mut ImgQueue) -> JoinHandle<()> {
                 format: b"MJPG",
                 ..Default::default()
             })
-            .unwrap();
+            .expect("Error starting webcam.");
 
         sleep(Duration::from_millis(1000));
         loop {
