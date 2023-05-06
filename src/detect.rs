@@ -17,7 +17,7 @@ pub fn airplane(a: &RgbImage, b: &RgbImage) -> (u64, u64) {
 }
 fn h(pix: &Rgb<u8>) -> u64 {
     let (x, y, z) = (pix.0[0] as u64, pix.0[1] as u64, pix.0[2] as u64);
-    0 * x * x + 0 * y * y + z * z * 1
+    x * x + y * y + z * z
 }
 
 pub fn average(img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> (u64, u64) {
