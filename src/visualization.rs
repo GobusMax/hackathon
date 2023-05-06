@@ -27,7 +27,7 @@ impl EguiApp {
             .map(|(i, ib)| {
                 cc.egui_ctx.load_texture(
                     format!("data/short/{:03}", i),
-                    ColorImage::from_rgba_unmultiplied(
+                    ColorImage::from_rgb(
                         [ib.width() as usize, ib.height() as usize],
                         ib.as_flat_samples().as_slice(),
                     ),
