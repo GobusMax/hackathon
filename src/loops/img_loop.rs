@@ -5,7 +5,7 @@ use crate::{data_share::DataTransfer, detect, img_buffer::ImgSwapBuffer};
 use std::{
     io::Cursor,
     sync::Arc,
-    thread::{self, JoinHandle, sleep},
+    thread::{self, sleep, JoinHandle},
 };
 
 pub fn img_handling_loop(
@@ -20,14 +20,17 @@ pub fn img_handling_loop(
         img_r.set_format(image::ImageFormat::Jpeg);
         let img = img_r.decode().unwrap();
         transfer_data.image = img.to_rgb8();
-        transfer_data.image_size = [img.width() as usize, img.height() as usize];
+        transfer_data.image_size =
+            [img.width() as usize, img.height() as usize];
+        transfer_data.image_size =
+            [img.width() as usize, img.height() as usize];
         if let Some(f) = &first {
             let res = detect::airplane(f, &transfer_data.image);
             transfer_data.data_points.push(res);
         } else {
             first = Some(transfer_data.image.clone());
         }
-        img.save(format!("data/{:04}.jpg",count)).unwrap();
+        // img.save(format!("data/{:04}.jpg", count)).unwrap();
         count += 1;
         data_transfer.cv.notify_all();
         println!("HALLO");
