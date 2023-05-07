@@ -1319,9 +1319,9 @@ checksum = "03087c2bad5e1034e8cace5926dec053fb3790248370865f5117a7d0213354c8"
 
 [[package]]
 name = "libc"
-version = "0.2.142"
+version = "0.2.143"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6a987beff54b60ffa6d51982e1aa1146bc42f19bd26be28b0586f252fccf5317"
+checksum = "edc207893e85c5d6be840e969b496b53d94cec8be2d501b214f50daa97fa8024"
 
 [[package]]
 name = "libloading"
@@ -2778,9 +2778,9 @@ checksum = "1a515f5799fe4961cb532f983ce2b23082366b898e52ffbce459c86f67c8378a"
 
 [[package]]
 name = "winit"
-version = "0.28.4"
+version = "0.28.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "654fd36bd7ea8681c03b70b0748b749d3fe230063c06b3db3ba2af284065a468"
+checksum = "94c9651471cd576737671fbf7081edfea43de3e06846dd9bd4e49ea803c9f55f"
 dependencies = [
  "android-activity",
  "bitflags",
@@ -2874,9 +2874,9 @@ dependencies = [
 
 [[package]]
 name = "xml-rs"
-version = "0.8.5"
+version = "0.8.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "374b609fb36c36ce3501094dc0548f7df5d8d102224b65bc59812e4a5425d571"
+checksum = "40e1a60e6e271dfb0db2db95987551348db75ebd6a78be07b9039b036f7dae2a"
 
 [[package]]
 name = "zbus"

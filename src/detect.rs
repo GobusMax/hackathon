@@ -1,20 +1,21 @@
-use std::time::Instant;
+//use std::time::Instant;
 
 use image::{DynamicImage, ImageBuffer, Rgb, RgbImage};
 //ToDO checking for density around maximum point?
+//ToDo: Nur normales Mittel aktiver Punkte
 const K: u32 = 2; //Sensordensity in Pixel
 
 pub fn airplane(a: &RgbImage, b: &RgbImage) -> (u64, u64) {
-    let mut start = Instant::now();
+    //let mut start = Instant::now();
 
     let diff_dynamic_image: DynamicImage = difference(a, b).into();
     //diff_dynamic_image.save("Difference.png").unwrap();
-    println!("difference: {}", start.elapsed().as_micros());
-    start = Instant::now();
+    //println!("difference: {}", start.elapsed().as_micros());
+    //start = Instant::now();
 
     let res = averageCenter(&diff_dynamic_image.into_rgb8());
 
-    println!("average: {}\n", start.elapsed().as_micros());
+    //println!("average: {}\n", start.elapsed().as_micros());
     res
 }
 
@@ -24,16 +25,16 @@ pub fn airplane2(
     dev_avg: f64,
     max_avg: f64,
 ) -> (u64, u64) {
-    let mut start = Instant::now();
+    //let mut start = Instant::now();
 
     let diff_dynamic_image: DynamicImage = difference(&seedImage, img).into();
     //diff_dynamic_image.save("Difference.png").unwrap();
-    println!("difference: {}", start.elapsed().as_micros());
-    start = Instant::now();
+    //println!("difference: {}", start.elapsed().as_micros());
+    //start = Instant::now();
 
     let res = averageCenter2(&diff_dynamic_image.into_rgb8(), dev_avg, max_avg);
 
-    println!("average: {}\n", start.elapsed().as_micros());
+    //println!("average: {}\n", start.elapsed().as_micros());
     res
 }
 fn h(pix: &Rgb<u8>) -> u64 {
@@ -41,7 +42,7 @@ fn h(pix: &Rgb<u8>) -> u64 {
     x * x + y * y + z * z
 }
 
-pub fn averageCenter(img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> (u64, u64) {
+pub fn averageCenter(img: &RgbImage) -> (u64, u64) {
     let xdim = img.width();
     let ydim = img.height();
     let h_img = img
@@ -80,7 +81,7 @@ pub fn averageCenter(img: &ImageBuffer<Rgb<u8>, Vec<u8>>) -> (u64, u64) {
             }
         }
     }
-    dbg!(dev / (xdim as u64 * ydim as u64));
+    //dbg!(dev / (xdim as u64 * ydim as u64));
     //if sum < (3 * xdim as u64 * ydim as u64) {
     //    return (0, 0);
     //}
@@ -130,10 +131,10 @@ pub fn averageCenter2(
             }
         }
     }
-    dbg!(dev / (xdim as u64 * ydim as u64)); //Brauchen gute Referenz Werte um die Standardabweichung tatsächlich benutzen zu können.
-                                             //if sum < (3 * xdim as u64 * ydim as u64) {
-                                             //    return (0, 0);
-                                             //}
+    //dbg!(dev / (xdim as u64 * ydim as u64)); //Brauchen gute Referenz Werte um die Standardabweichung tatsächlich benutzen zu können.
+    //if sum < (3 * xdim as u64 * ydim as u64) {
+    //    return (0, 0);
+    //}
     (K as u64 * x / sum, K as u64 * y / sum)
 }
 

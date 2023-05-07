@@ -11,8 +11,8 @@ fn main() {
     camera
         .start(&rscam::Config {
             interval: (1, 30), // 30 fps.
-            resolution: (1280, 720),
-            format: b"MJPG",
+            resolution: (640, 480),
+            format: b"YU12",
             ..Default::default()
         })
         .unwrap();
@@ -21,7 +21,7 @@ fn main() {
 
     for i in 0..10000 {
         let frame = camera.capture().unwrap();
-        fs::create_dir("webcap").unwrap();
+        fs::create_dir_all("webcap").unwrap();
         let mut file =
             File::create(&format!("webcap/frame-{}.jpg", i)).unwrap();
         file.write_all(&frame[..]).unwrap();

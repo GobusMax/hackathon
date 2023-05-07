@@ -22,8 +22,8 @@ fn display(data: Vec<Vec2>, images: Vec<ImageBuffer<Rgb<u8>, Vec<u8>>>) {
 fn main() {
     let mut data = vec![];
     let mut images = vec![];
-    for i in 1..=52 {
-        let img = open(format!("data/short/{:03}.png", i)).unwrap();
+    for i in 1..=100 {
+        let img = open(format!("data/{:04}.jpg", i)).unwrap();
         let img_buffer = img.to_rgb8();
         images.push(img_buffer);
     }
@@ -50,12 +50,13 @@ impl EguiApp {
         // Restore app state using cc.storage (requires the "persistence" feature).
         // Use the cc.gl (a glow::Context) to create graphics shaders and buffers that you can use
         // for e.g. egui::PaintCallback.
+
         let textures = images
             .iter()
             .enumerate()
             .map(|(i, ib)| {
                 cc.egui_ctx.load_texture(
-                    format!("data/short/{:03}", i),
+                    format!("data/{:04}", i),
                     ColorImage::from_rgb(
                         [ib.width() as usize, ib.height() as usize],
                         ib.as_flat_samples().as_slice(),
@@ -98,7 +99,8 @@ impl eframe::App for EguiApp {
             let line = Line::new(plot_points).width(2.);
             ui.add(
                 Slider::new(&mut self.cur, 0..=(self.textures.len() - 2))
-                    .text("Number of Frames"),
+                    .text("Number of Frames")
+                    .trailing_fill(true),
             );
             Plot::new("Plot")
                 .view_aspect(1.0)
