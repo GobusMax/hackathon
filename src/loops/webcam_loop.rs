@@ -12,16 +12,15 @@ pub fn webcam_loop(queue: Arc<ImgSwapBuffer>) -> JoinHandle<()> {
         camera
             .start(&rscam::Config {
                 interval: (1, 30), // 30 fps.
-                resolution: (640, 480),
-                format: b"MPG",
+                resolution: (1280, 720),
+                format: b"MJPG",
                 ..Default::default()
             })
             .expect("Error starting webcam.");
 
         sleep(Duration::from_millis(1000));
         loop {
-            let frame: rscam::Frame =
-                camera.capture().expect("Error capturing from webcam.");
+            let frame: rscam::Frame = camera.capture().expect("Error capturing from webcam.");
             queue.write_frame(frame);
         }
     })
