@@ -30,7 +30,7 @@ pub fn img_handling_loop(
         } else {
             first = Some(transfer_data.image.clone());
         }
-        img.save(format!("data/{:04}.jpg", count)).unwrap();
+        // img.save(format!("data/{:04}.jpg", count)).unwrap();
         count += 1;
         data_transfer.cv.notify_all();
         println!("HALLO");
