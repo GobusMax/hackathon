@@ -20,6 +20,8 @@ pub fn img_handling_loop(
         img_r.set_format(image::ImageFormat::Jpeg);
         let img = img_r.decode().unwrap();
         transfer_data.image = img.to_rgb8();
+        transfer_data.image_size =
+            [img.width() as usize, img.height() as usize];
         if let Some(f) = &first {
             let res = detect::airplane(f, &transfer_data.image);
             transfer_data.data_points.push(res);

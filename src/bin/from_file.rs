@@ -98,7 +98,7 @@ impl eframe::App for EguiApp {
                 .collect();
             let line = Line::new(plot_points).width(2.);
             ui.add(
-                Slider::new(&mut self.cur, 0..=(self.textures.len() - 2))
+                Slider::new(&mut self.cur, 0..=(self.textures.len() - 1))
                     .text("Number of Frames")
                     .trailing_fill(true),
             );
