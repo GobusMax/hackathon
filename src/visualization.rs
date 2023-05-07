@@ -1,11 +1,13 @@
+use std::sync::Arc;
+
 use egui::{
     plot::{log_grid_spacer, Line, Plot, PlotImage, PlotPoints, Points},
-    Color32, ColorImage, Slider, TextureHandle, TextureOptions, Vec2, Visuals,
+    Color32, ColorImage, Slider, TextureHandle, TextureOptions, Visuals,
 };
 
-use image::DynamicImage;
+use crate::data_share::DataTransfer;
 
-fn display() {
+pub fn display(data_transfer: Arc<DataTransfer>) {
     let native_options = eframe::NativeOptions {
         fullscreen: true,
         ..Default::default()
@@ -13,28 +15,31 @@ fn display() {
     eframe::run_native(
         "Airplane",
         native_options,
-        Box::new(|cc| Box::new(EguiApp::new(cc))),
+        Box::new(|cc| Box::new(EguiApp::new(cc, data_transfer))),
     )
     .unwrap();
 }
 
 pub struct EguiApp {
     cur: usize,
-    data: Vec<Vec2>,
     textures: Vec<TextureHandle>,
+    data_transfer: Arc<DataTransfer>,
 }
 
 impl EguiApp {
-    pub fn new(_cc: &eframe::CreationContext<'_>) -> Self {
+    pub fn new(
+        _cc: &eframe::CreationContext<'_>,
+        data_transfer: Arc<DataTransfer>,
+    ) -> Self {
         // Customize egui here with cc.egui_ctx.set_fonts and cc.egui_ctx.set_visuals.
         // Restore app state using cc.storage (requires the "persistence" feature).
         // Use the cc.gl (a glow::Context) to create graphics shaders and buffers that you can use
         // for e.g. egui::PaintCallback.
         _cc.egui_ctx.set_visuals(Visuals::light());
         Self {
-            data: vec![],
             cur: 0,
             textures: vec![],
+            data_transfer,
         }
     }
 }
@@ -42,18 +47,17 @@ const MAX_NUM_DATA: usize = 100;
 
 impl eframe::App for EguiApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        let new_image = get_image();
+        let mut transfer_data = self.data_transfer.val.lock().unwrap();
         self.textures.push(ctx.load_texture(
             "tex",
             ColorImage::from_rgb(
-                [new_image.width() as usize, new_image.width() as usize],
-                new_image.as_rgb8().unwrap().as_flat_samples().as_slice(),
+                transfer_data.image_size,
+                &transfer_data.image_bytes,
             ),
             TextureOptions::default(),
         ));
-        self.data.push(get_pos());
-        if self.data.len() >= MAX_NUM_DATA {
-            self.data.remove(0);
+        if transfer_data.data_points.len() >= MAX_NUM_DATA {
+            transfer_data.data_points.remove(0);
         }
         egui::CentralPanel::default().show(ctx, |ui| {
             //UPDATE
@@ -67,14 +71,16 @@ impl eframe::App for EguiApp {
                 tex.size_vec2(),
             )
             .tint(Color32::from_white_alpha(32));
-            let plot_points: PlotPoints = self.data[0..self.cur]
+            let plot_points: PlotPoints = transfer_data.data_points
+                [0..self.cur]
                 .iter()
-                .map(|v| [v.x as f64, v.y as f64])
+                .map(|v| [v.0 as f64, v.1 as f64])
                 .collect();
             let points = Points::new(plot_points).radius(4.);
-            let plot_points: PlotPoints = self.data[0..self.cur]
+            let plot_points: PlotPoints = transfer_data.data_points
+                [0..self.cur]
                 .iter()
-                .map(|v| [v.x as f64, v.y as f64])
+                .map(|v| [v.0 as f64, v.1 as f64])
                 .collect();
             let line = Line::new(plot_points).width(2.);
             ui.add(
@@ -93,11 +99,4 @@ impl eframe::App for EguiApp {
                 });
         });
     }
-}
-
-fn get_image() -> DynamicImage {
-    todo!()
-}
-fn get_pos() -> Vec2 {
-    todo!()
 }

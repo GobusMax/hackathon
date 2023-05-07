@@ -1,8 +1,8 @@
+use egui::vec2;
 use egui::{
     plot::{log_grid_spacer, Line, Plot, PlotImage, PlotPoints, Points},
     Color32, ColorImage, Slider, TextureHandle, TextureOptions, Vec2,
 };
-use egui::{vec2, Visuals};
 use hackathon::detect;
 
 use image::{open, ImageBuffer, Rgb};
