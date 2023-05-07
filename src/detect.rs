@@ -43,7 +43,7 @@ pub fn average(img: &RgbImage) -> (u64, u64) {
             }
         }
     }
-    dbg!(sum);
+    // dbg!(sum);
     if sum < 500000 {
         return (0, 0);
     }

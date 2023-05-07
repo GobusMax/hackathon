@@ -16,11 +16,9 @@ pub fn img_handling_loop(
     thread::spawn(move || loop {
         let mut transfer_data = data_transfer.val.lock().unwrap();
         let buffer = swap_buf.read_frame();
-        let img = Reader::new(Cursor::new(buffer))
-            .with_guessed_format()
-            .unwrap()
-            .decode()
-            .unwrap();
+        let mut img_r = Reader::new(Cursor::new(buffer));
+        img_r.set_format(image::ImageFormat::Jpeg);
+        let img = img_r.decode().unwrap();
         transfer_data.image = img.to_rgb8();
         if let Some(f) = &first {
             let res = detect::airplane(f, &transfer_data.image);

@@ -2,8 +2,9 @@ use std::sync::Arc;
 
 use egui::{
     plot::{log_grid_spacer, Line, Plot, PlotImage, PlotPoints, Points},
-    Color32, ColorImage, Slider, TextureHandle, TextureOptions, Visuals,
+    Color32, ColorImage, Slider, Visuals,
 };
+use egui_extras::RetainedImage;
 
 use crate::data_share::DataTransfer;
 
@@ -22,7 +23,7 @@ pub fn display(data_transfer: Arc<DataTransfer>) {
 
 pub struct EguiApp {
     cur: usize,
-    textures: Vec<TextureHandle>,
+    textures: Vec<RetainedImage>,
     data_transfer: Arc<DataTransfer>,
 }
 
@@ -47,16 +48,15 @@ const MAX_NUM_DATA: usize = 100;
 
 impl eframe::App for EguiApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        println!("WOWZERS");
         let mut transfer_data = self.data_transfer.val.lock().unwrap();
-        self.textures.push(ctx.load_texture(
+        let retained_image = egui_extras::RetainedImage::from_color_image(
             "tex",
             ColorImage::from_rgb(
                 transfer_data.image_size,
                 &transfer_data.image,
             ),
-            TextureOptions::default(),
-        ));
+        );
+        self.textures.push(retained_image);
         if transfer_data.data_points.len() >= MAX_NUM_DATA {
             transfer_data.data_points.remove(0);
         }
@@ -64,7 +64,7 @@ impl eframe::App for EguiApp {
             //UPDATE
             let tex = &self.textures[self.cur];
             let plot_image = PlotImage::new(
-                tex.id(),
+                tex.texture_id(ctx),
                 egui::plot::PlotPoint {
                     x: tex.size()[0] as f64 / 2.,
                     y: tex.size()[1] as f64 / 2.,
