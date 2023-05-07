@@ -66,9 +66,9 @@ impl eframe::App for EguiApp {
             ),
         );
         self.texture = retained_image;
-        // if transfer_data.data_points.len() >= MAX_NUM_DATA {
-        //     transfer_data.data_points.remove(0);
-        // }
+        if transfer_data.data_points.len() >= MAX_NUM_DATA {
+            transfer_data.data_points.remove(0);
+        }
         egui::CentralPanel::default().show(ctx, |ui| {
             //UPDATE
             let plot_image = PlotImage::new(

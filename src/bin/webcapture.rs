@@ -12,7 +12,7 @@ fn main() {
         .start(&rscam::Config {
             interval: (1, 30), // 30 fps.
             resolution: (640, 480),
-            format: b"YU12",
+            format: b"YUYV",
             ..Default::default()
         })
         .unwrap();
