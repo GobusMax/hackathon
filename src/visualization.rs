@@ -52,7 +52,7 @@ impl eframe::App for EguiApp {
             "tex",
             ColorImage::from_rgb(
                 transfer_data.image_size,
-                &transfer_data.image_bytes,
+                &transfer_data.image,
             ),
             TextureOptions::default(),
         ));
