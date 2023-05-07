@@ -47,6 +47,7 @@ const MAX_NUM_DATA: usize = 100;
 
 impl eframe::App for EguiApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        println!("WOWZERS");
         let mut transfer_data = self.data_transfer.val.lock().unwrap();
         self.textures.push(ctx.load_texture(
             "tex",

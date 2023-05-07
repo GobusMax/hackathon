@@ -1,18 +1,9 @@
-use std::time::Instant;
-
 use image::{DynamicImage, ImageBuffer, Rgb, RgbImage};
 pub fn airplane(a: &RgbImage, b: &RgbImage) -> (u64, u64) {
-    let mut start = Instant::now();
-
     let diff_dynamic_image: DynamicImage = difference(a, b).into();
     //diff_dynamic_image.save("Difference.png").unwrap();
-    println!("difference: {}", start.elapsed().as_micros());
-    start = Instant::now();
 
-    let res = average(&diff_dynamic_image.into_rgb8());
-
-    println!("average: {}\n", start.elapsed().as_micros());
-    res
+    average(&diff_dynamic_image.into_rgb8())
 }
 fn h(pix: &Rgb<u8>) -> u64 {
     let (x, y, z) = (pix.0[0] as u64, pix.0[1] as u64, pix.0[2] as u64);
