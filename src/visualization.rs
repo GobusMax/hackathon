@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use egui::{
     plot::{log_grid_spacer, Line, Plot, PlotImage, PlotPoints, Points},
-    Color32, ColorImage, Slider, Visuals, TextureOptions, Vec2,
+    Color32, ColorImage, Vec2,
 };
 use egui_extras::RetainedImage;
 
@@ -22,7 +22,7 @@ pub fn display(data_transfer: Arc<DataTransfer>) {
 }
 
 pub struct EguiApp {
-    texture:RetainedImage,
+    texture: RetainedImage,
     data_transfer: Arc<DataTransfer>,
 }
 
@@ -77,15 +77,20 @@ impl eframe::App for EguiApp {
                     x: self.texture.width() as f64 / 2.,
                     y: self.texture.height() as f64 / 2.,
                 },
-                Vec2::new(self.texture.width() as f32, self.texture.width() as f32),
+                Vec2::new(
+                    self.texture.width() as f32,
+                    self.texture.height() as f32,
+                ),
             )
             .tint(Color32::from_white_alpha(32));
-            let plot_points: PlotPoints = transfer_data.data_points
+            let plot_points: PlotPoints = transfer_data
+                .data_points
                 .iter()
                 .map(|v| [v.0 as f64, v.1 as f64])
                 .collect();
             let points = Points::new(plot_points).radius(4.);
-            let plot_points: PlotPoints = transfer_data.data_points
+            let plot_points: PlotPoints = transfer_data
+                .data_points
                 .iter()
                 .map(|v| [v.0 as f64, v.1 as f64])
                 .collect();
@@ -100,8 +105,8 @@ impl eframe::App for EguiApp {
                     plot_ui.line(line);
                     plot_ui.points(points);
                 });
-                ctx.request_repaint();
-                self.data_transfer.cv.notify_all();
+            ctx.request_repaint();
+            self.data_transfer.cv.notify_all();
         });
     }
 }
