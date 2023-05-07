@@ -36,7 +36,11 @@ impl EguiApp {
         // Use the cc.gl (a glow::Context) to create graphics shaders and buffers that you can use
         // for e.g. egui::PaintCallback.
         //_cc.egui_ctx.set_visuals(Visuals::light());
-        let transfer_data = data_transfer.val.lock().unwrap();
+
+        let mut transfer_data = data_transfer.val.lock().unwrap();
+        while transfer_data.image.is_empty() {
+            transfer_data = data_transfer.cv.wait(transfer_data).unwrap();
+        }
         let texture = egui_extras::RetainedImage::from_color_image(
             "tex",
             ColorImage::from_rgb(
